@@ -8,6 +8,7 @@ from pydantic import (
     field_validator,
 )
 
+from app.pets.pets_schemas import CreatePetDto
 from app.shared.datetimes import ApiDatetime
 from app.shared.validation import validate_email, validate_int, validate_text
 
@@ -61,6 +62,7 @@ class CreateStudentDto(BaseModel):
     username: str = Field(min_length=3, max_length=30, pattern=USERNAME_PATTERN)
     email: EmailStr
     age: int = Field(ge=18, le=99)
+    pets: list[CreatePetDto] = Field(default_factory=list)
 
     @field_validator("name", mode="before")
     @classmethod

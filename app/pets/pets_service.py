@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from fastapi import HTTPException, status
 
-from app.pets.pets_repository import PetsRepository
+from app.pets.pets_repository import PetsRepository, pets_repository
 from app.pets.pets_schemas import CreatePetDto, Pet, PetList, UpdatePetDto
 from app.shared.datetimes import utc_now
 from app.shared.exceptions import conflict
@@ -94,5 +94,4 @@ class PetsService:
             )
 
 
-pets_repository = PetsRepository()
 pets_service = PetsService(pets_repository, students_service)

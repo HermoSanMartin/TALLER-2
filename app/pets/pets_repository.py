@@ -27,3 +27,6 @@ class PetsRepository:
 
     def delete_by_student(self, student_id: str) -> None:
         self._store.delete_by(lambda pet: pet.studentId == student_id)
+
+
+pets_repository = PetsRepository()
