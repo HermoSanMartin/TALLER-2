@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 
 from app.shared.datetimes import utc_now
 from app.shared.exceptions import conflict
+from app.shared.types import FieldErrors
 from app.students.students_repository import StudentsRepository
 from app.students.students_schemas import (
     CreateStudentDto,
@@ -75,7 +76,7 @@ class StudentsService:
         data: CreateStudentDto | UpdateStudentDto,
         except_id: str | None = None,
     ) -> None:
-        errors: dict[str, dict[str, str]] = {}
+        errors: FieldErrors = {}
 
         if data.email:
             existing = self.repository.find_by_email(data.email)

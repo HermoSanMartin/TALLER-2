@@ -27,6 +27,7 @@ select = [
     "E9",
     "F",
     "I",
+    "UP",
 ]
 
 [tool.uv]

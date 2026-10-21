@@ -1,11 +1,14 @@
 import json
+from collections.abc import Awaitable, Callable
+from typing import Final
 
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 
 from app.shared.datetimes import now_iso
+from app.shared.types import Envelope, FieldErrors
 
-MESSAGE_BY_METHOD = {
+MESSAGE_BY_METHOD: Final[dict[str, str]] = {
     "GET": "Operación exitosa",
     "POST": "Recurso creado",
     "PATCH": "Recurso actualizado",
@@ -13,7 +16,7 @@ MESSAGE_BY_METHOD = {
 }
 
 
-def success_response(code: int, message: str, data: object) -> dict:
+def success_response(code: int, message: str, data: object) -> Envelope:
     return {
         "code": code,
         "success": True,
@@ -28,9 +31,9 @@ def error_response(
     message: str,
     *,
     error: str | None = None,
-    errors: dict[str, dict[str, str]] | None = None,
-) -> dict:
-    body: dict = {
+    errors: FieldErrors | None = None,
+) -> Envelope:
+    body: Envelope = {
         "code": code,
         "success": False,
         "message": message,
@@ -46,7 +49,10 @@ def error_response(
     return body
 
 
-async def envelope_middleware(request: Request, call_next) -> Response:
+async def envelope_middleware(
+    request: Request,
+    call_next: Callable[[Request], Awaitable[Response]],
+) -> Response:
     response: Response = await call_next(request)
 
     if not request.url.path.startswith("/api") or not 200 <= response.status_code < 400:

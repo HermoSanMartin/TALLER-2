@@ -1,15 +1,15 @@
 from collections.abc import Callable
-from typing import Generic, Protocol, TypeVar
+from typing import Protocol
 
 
 class HasId(Protocol):
     id: str
 
 
-T = TypeVar("T", bound=HasId)
+type Predicate[T] = Callable[[T], bool]
 
 
-class InMemoryStore(Generic[T]):
+class InMemoryStore[T: HasId]:
     def __init__(self) -> None:
         self._items: dict[str, T] = {}
 
@@ -25,10 +25,10 @@ class InMemoryStore(Generic[T]):
     def find_all(self) -> list[T]:
         return list(self._items.values())
 
-    def find_by(self, predicate: Callable[[T], bool]) -> list[T]:
+    def find_by(self, predicate: Predicate[T]) -> list[T]:
         return [item for item in self.find_all() if predicate(item)]
 
-    def delete_by(self, predicate: Callable[[T], bool]) -> None:
+    def delete_by(self, predicate: Predicate[T]) -> None:
         for item_id, item in list(self._items.items()):
             if predicate(item):
                 del self._items[item_id]

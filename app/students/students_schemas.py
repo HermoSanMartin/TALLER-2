@@ -1,3 +1,5 @@
+from typing import Final
+
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -9,26 +11,26 @@ from pydantic import (
 from app.shared.datetimes import ApiDatetime
 from app.shared.validation import validate_email, validate_int, validate_text
 
-NO_HTML_PATTERN = r"^[^<>]*$"
-USERNAME_PATTERN = r"^[a-z0-9_]+$"
+NO_HTML_PATTERN: Final[str] = r"^[^<>]*$"
+USERNAME_PATTERN: Final[str] = r"^[a-z0-9_]+$"
 
-STUDENT_NAME_MESSAGES = {
+STUDENT_NAME_MESSAGES: Final[dict[str, str]] = {
     "type": "El nombre debe ser un texto",
     "empty": "El nombre no puede estar vacío",
     "length": "El nombre debe tener entre 3 y 100 caracteres",
     "pattern": "No se permiten etiquetas HTML",
 }
-USERNAME_MESSAGES = {
+USERNAME_MESSAGES: Final[dict[str, str]] = {
     "type": "El nombre de usuario debe ser un texto",
     "empty": "El nombre de usuario no puede estar vacío",
     "length": "El nombre de usuario debe tener entre 3 y 30 caracteres",
     "pattern": "El nombre de usuario solo puede contener minúsculas, números y guiones bajos",
 }
-EMAIL_MESSAGES = {
+EMAIL_MESSAGES: Final[dict[str, str]] = {
     "invalid": "El correo electrónico no es válido",
     "empty": "El correo electrónico no puede estar vacío",
 }
-STUDENT_AGE_MESSAGES = {
+STUDENT_AGE_MESSAGES: Final[dict[str, str]] = {
     "type": "La edad debe ser un número entero",
     "min": "La edad debe ser al menos 18",
     "max": "La edad debe ser como máximo 99",

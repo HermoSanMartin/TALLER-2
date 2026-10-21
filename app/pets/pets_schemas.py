@@ -1,3 +1,5 @@
+from typing import Final
+
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -8,21 +10,21 @@ from pydantic import (
 from app.shared.datetimes import ApiDatetime
 from app.shared.validation import validate_int, validate_text
 
-NO_HTML_PATTERN = r"^[^<>]*$"
+NO_HTML_PATTERN: Final[str] = r"^[^<>]*$"
 
-PET_NAME_MESSAGES = {
+PET_NAME_MESSAGES: Final[dict[str, str]] = {
     "type": "El nombre debe ser un texto",
     "empty": "El nombre no puede estar vacío",
     "length": "El nombre debe tener entre 1 y 50 caracteres",
     "pattern": "No se permiten etiquetas HTML",
 }
-PET_SPECIES_MESSAGES = {
+PET_SPECIES_MESSAGES: Final[dict[str, str]] = {
     "type": "La especie debe ser un texto",
     "empty": "La especie no puede estar vacía",
     "length": "La especie debe tener entre 1 y 50 caracteres",
     "pattern": "No se permiten etiquetas HTML",
 }
-PET_AGE_MESSAGES = {
+PET_AGE_MESSAGES: Final[dict[str, str]] = {
     "type": "La edad debe ser un número entero",
     "min": "La edad debe ser al menos 0",
     "max": "La edad debe ser como máximo 100",

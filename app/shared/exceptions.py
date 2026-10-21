@@ -1,4 +1,5 @@
 import logging
+from typing import Final
 
 from fastapi import HTTPException, Request
 from fastapi.exceptions import RequestValidationError
@@ -6,11 +7,12 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.shared.api_response import error_response
+from app.shared.types import FieldErrors
 
 logger = logging.getLogger(__name__)
 
 
-def conflict(errors: dict[str, dict[str, str]]) -> HTTPException:
+def conflict(errors: FieldErrors) -> HTTPException:
     return HTTPException(
         status_code=409,
         detail={"message": "Conflicto con datos existentes", "errors": errors},
@@ -21,7 +23,7 @@ async def validation_exception_handler(
     request: Request,
     exc: RequestValidationError,
 ) -> JSONResponse:
-    errors: dict[str, dict[str, str]] = {}
+    errors: FieldErrors = {}
 
     for err in exc.errors():
         field = str(err["loc"][-1]) if err["loc"] else "body"
@@ -48,7 +50,7 @@ async def validation_exception_handler(
     )
 
 
-STUDENT_MISSING_MESSAGES: dict[str, str] = {
+STUDENT_MISSING_MESSAGES: Final[dict[str, str]] = {
     "name": (
         "El nombre debe ser un texto, El nombre no puede estar vacío, "
         "El nombre debe tener entre 3 y 100 caracteres, No se permiten etiquetas HTML"
@@ -66,7 +68,7 @@ STUDENT_MISSING_MESSAGES: dict[str, str] = {
     ),
 }
 
-PET_MISSING_MESSAGES: dict[str, str] = {
+PET_MISSING_MESSAGES: Final[dict[str, str]] = {
     "name": (
         "El nombre debe ser un texto, El nombre no puede estar vacío, "
         "El nombre debe tener entre 1 y 50 caracteres, No se permiten etiquetas HTML"
