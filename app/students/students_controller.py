@@ -1,40 +1,38 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.students.students_schemas import StudentSchema
 
-from app.pets.pets_service import pets_service
-from app.students.students_schemas import (
-    CreateStudentDto,
-    Student,
-    StudentList,
-    UpdateStudentDto,
-)
-from app.students.students_service import students_service
+router = APIRouter(prefix="/students", tags=["Students"])
 
-router = APIRouter(prefix="/api/students", tags=["Students"])
+# 1. OBTENER TODOS LOS ESTUDIANTES
+@router.get("/")
+def get_all_students(db: Session = Depends(get_db)):
+    return db.query(StudentSchema).all()
 
+# 2. OBTENER UN ESTUDIANTE POR ID
+@router.get("/{student_id}")
+def get_student(student_id: int, db: Session = Depends(get_db)):
+    student = db.query(StudentSchema).filter(StudentSchema.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return student
 
-@router.get("")
-def find_all() -> StudentList:
-    return students_service.find_all()
+# 3. CREAR UN ESTUDIANTE
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def create_student(student_data: dict, db: Session = Depends(get_db)):
+    new_student = StudentSchema(**student_data)
+    db.add(new_student)
+    db.commit()
+    db.refresh(new_student)
+    return new_student
 
-
-@router.get("/{studentId}")
-def find_by_id(studentId: str) -> Student:
-    return students_service.find_by_id(studentId)
-
-
-@router.post("", status_code=201)
-def create(body: CreateStudentDto) -> Student:
-    return students_service.create(body)
-
-
-@router.patch("/{studentId}")
-def update(studentId: str, body: UpdateStudentDto) -> Student:
-    return students_service.update(studentId, body)
-
-
-@router.delete("/{studentId}")
-def delete(studentId: str) -> Student:
-    deleted = students_service.delete(studentId)
-    pets_service.delete_all_for_student(studentId)
-
-    return deleted
+# 4. ELIMINAR UN ESTUDIANTE
+@router.delete("/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_student(student_id: int, db: Session = Depends(get_db)):
+    student = db.query(StudentSchema).filter(StudentSchema.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    db.delete(student)
+    db.commit()
+    return None
