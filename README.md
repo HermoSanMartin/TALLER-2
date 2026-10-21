@@ -1,11 +1,11 @@
 # CRUD Students & Pets (FastAPI)
 
-Proyecto FastAPI que implementa un **CRUD** para la entidad `Student` y sus `Pet`, con **persistencia en SQLite** (a través de SQLAlchemy). Los datos se guardan en un archivo `data.db` local.
+Proyecto FastAPI que implementa un **CRUD** para la entidad `Student` y sus `Pet`, con **almacenamiento en memoria** a través de repositorios respaldados por diccionarios. Los datos viven mientras el proceso esté corriendo.
 
 ## Tecnologías
 
 - Python 3.13
-- FastAPI + SQLAlchemy + SQLite
+- FastAPI + repositorios en memoria
 - HTML + JS + Tailwind CSS (frontend estático)
 
 ## Resumen funcional
@@ -164,7 +164,7 @@ El cliente estático (`public/`) consume este estándar de forma uniforme:
 ## Contexto técnico
 
 - **Backend**: FastAPI
-- **Persistencia**: SQLite (`data.db`) con SQLAlchemy 2.0
+- **Persistencia**: en memoria (repositorios respaldados por diccionarios); los datos se pierden al reiniciar
 - **Validación**: Pydantic v2
 - **Frontend**: archivos estáticos en `public/` (Alpine.js + Tailwind CSS + vanilla-sonner, vía CDN)
 - **Gestor de dependencias**: uv
@@ -201,7 +201,7 @@ La aplicación queda disponible en:
 - `http://localhost:3000`
 - `http://localhost:3000/docs`
 
-> El archivo `data.db` se genera automáticamente en la raíz del proyecto y está ignorado por git.
+> Al ser un almacenamiento en memoria, los datos se pierden cada vez que se reinicia el servidor (incluido el reload de desarrollo).
 
 ## Comandos útiles
 

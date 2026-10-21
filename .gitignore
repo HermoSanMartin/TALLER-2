@@ -485,11 +485,5 @@ dist/
 node_modules/
 tsconfig.tsbuildinfo
 
-# SQLite
-data.db
-data.db-journal
-data.db-wal
-data.db-shm
-
 # Solución de referencia de la actividad Docker (no versionar)
 solucion/
