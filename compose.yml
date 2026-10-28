@@ -1,5 +1,4 @@
 services:
-  # Servicio 1: Base de datos PostgreSQL
   postgres_db:
     image: postgres:15-alpine
     container_name: postgres_db
@@ -13,8 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # Servicio 2: Administrador Visual (pgAdmin)
-  db_admin:
+  pgadmin_visual:
     image: dpage/pgadmin4
     container_name: pgadmin_visual
     restart: always
@@ -23,6 +21,19 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "${PGADMIN_PORT}:80"
+    depends_on:
+      - postgres_db
+
+  backend:
+    build: .
+    container_name: fastapi_app
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - .:/app   # <-- ESTA LÍNEA SINCRONIZA TU CARPETA LOCAL CON EL CONTENEDOR
     depends_on:
       - postgres_db
 
