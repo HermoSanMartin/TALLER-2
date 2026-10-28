@@ -1,28 +1,25 @@
-import os
-import sys
-from logging.config import fileConfig
+import sys, os
+from pathlib import Path
 
+# Inyección de ruta raíz
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
+
+from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# Agregar la raíz al path de Python
-sys.path.insert(0, os.path.abspath("."))
-
-# Intenta importar desde raíz o desde la carpeta app/ automáticamente
-try:
-    from database import Base
-    import models
-except ModuleNotFoundError:
-    from app.database import Base
-    import app.models
+# Importaciones corregidas a tus rutas reales
+from app.shared.database import Base
+from app.students.students_model import *
+from app.pets.pets_model import *
 
 config = context.config
 
 if config.config_file_name:
     fileConfig(config.config_file_name)
 
-# URL dinámica a PostgreSQL
-db_url = os.getenv("DATABASE_URL", "postgresql://hermo:taller2@postgres_db:5432/sistema_taller2")
+db_url = os.getenv("DATABASE_URL", "postgresql://hermo:taller2@localhost:5432/sistema_taller2")
 config.set_main_option("sqlalchemy.url", db_url)
 
 target_metadata = Base.metadata
@@ -35,7 +32,6 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
@@ -45,12 +41,10 @@ def run_migrations_online() -> None:
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata
         )
-
         with context.begin_transaction():
             context.run_migrations()
 
